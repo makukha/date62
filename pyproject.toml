@@ -1,0 +1,79 @@
+[project]
+name = "date62"
+description = "Compact string-based date(time) format for logging, data engineering, and visualizations."
+readme = "README.md"
+license = {text = "MIT"}
+keywords = [
+  "date", "datetime", "format",
+  # todo: add more keywords
+]
+classifiers = [
+  # todo: add classifiers: https://pypi.org/classifiers
+]
+requires-python = ">=3.8"
+# todo: requires-python = ">=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4"
+dynamic = ["version"]
+
+[project.optional-dependencies]
+cli = [
+  "click>=8",
+  "python-dateutil>=2.9",
+  "rich_click~=1.8; python_version>='3.9'"
+]
+
+[project.scripts]
+date62 = "date62.cli:cli"
+
+[project.urls]
+#Homepage = "https://date62.info"
+#Documentation = "https://docs.date62.info"
+Repository = "https://github.com/date62/date62-python"
+Issues = "https://github.com/date62/date62-python/issues"
+Changelog = "https://github.com/date62/date62-python/blob/master/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+  "pytest~=8.3; python_version>='3.12'",
+  "pytest-cov~=6.0; python_version>='3.12'",
+  "pytest-sugar~=1.0; python_version>='3.12'",
+  "python-dateutil>=2.9",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# bump-my-version
+
+[tool.bumpversion]
+current_version = "0.1.0"
+allow_dirty = true
+files = [
+  {filename = "src/date62/__version__.py"},
+]
+
+# hatch
+
+[tool.hatch]
+version = { path = "src/date62/__version__.py" }
+
+# towncrier
+
+[tool.towncrier]
+directory = "news.d"
+filename = "CHANGELOG.md"
+package = "date62"
+underlines = ["", "", ""]
+type = [
+  {name = "Security", directory = "security", showcontent = true},
+  {name = "Removed", directory = "removed", showcontent = true},
+  {name = "Deprecated", directory = "deprecated", showcontent = true},
+  {name = "Added", directory = "added", showcontent = true},
+  {name = "Changed", directory = "changed", showcontent = true},
+  {name = "Fixed", directory = "fixed", showcontent = true},
+]
+
+# uv
+
+[tool.uv]
+package = true
