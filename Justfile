@@ -18,9 +18,9 @@ seed:
     echo -e "#!/usr/bin/env sh\njust pre-commit" > .git/hooks/pre-commit
 
 # initialize dev environment
-[group('develop'), macos]
+[group('develop'), linux, macos]
 pre:
-    sudo port install gh git uv yq
+    brew install gh git uv yq
 
 # synchronize dev environment
 [group('develop')]
@@ -51,7 +51,8 @@ tox-provision:
 [group('develop')]
 test *toxargs: build
     make tests/requirements.txt
-    rm -f .tox/*/.pass-*
+    mkdir -p .tox
+    find .tox -name '.pass-*' -delete
     {{ if toxargs == "" { "just tox-provision" } else { "" } }}
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \

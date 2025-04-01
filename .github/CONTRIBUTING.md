@@ -19,6 +19,7 @@ You will need:
 - [GNU make](https://www.gnu.org/software/make/make.html)
 - [Docker](https://www.docker.com)
 - [Git](https://git-scm.com)
+- [yq](https://mikefarah.gitbook.io/yq)
 
 ### Initialize dev environment
 
