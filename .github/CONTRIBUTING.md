@@ -21,6 +21,12 @@ You will need:
 - [Git](https://git-scm.com)
 - [yq](https://mikefarah.gitbook.io/yq)
 
+If your OS is macOS or Linux, some of them can be installed by
+
+```shell
+$ just pre
+```
+
 ### Initialize dev environment
 
 - Fork project repository [makukha/date62](https://github.com/makukha/date62) under your account.
