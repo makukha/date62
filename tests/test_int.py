@@ -1,4 +1,4 @@
-from typing import assert_never
+from typing import Union
 
 import pytest
 
@@ -35,9 +35,9 @@ from date62.conv import int_to_base62, base62_to_int
         # invalid input
         (-1, ValueError),
         ('', TypeError),
-    )
+    ),
 )
-def test_int_to_str(num: int, base62: str | type[Exception]):
+def test_int_to_str(num: int, base62: Union[str, type[Exception]]):
     if isinstance(base62, str):
         assert int_to_base62(num) == base62
         assert base62_to_int(base62) == num
@@ -45,20 +45,22 @@ def test_int_to_str(num: int, base62: str | type[Exception]):
         with pytest.raises(base62):
             int_to_base62(num)
     else:
-        assert_never(base62)
+        raise AssertionError('unreachable')
 
 
+# fmt: off
 @pytest.mark.parametrize(
     'base62,num',
     (
         ('00', 0),
-    )
+    ),
 )
-def test_str_to_int(base62: str, num: int | type[Exception]):
+# fmt: on
+def test_str_to_int(base62: str, num: Union[int, type[Exception]]):
     if isinstance(num, int):
         assert base62_to_int(base62) == num
     elif isinstance(num, type) and issubclass(num, Exception):
         with pytest.raises(num):
             base62_to_int(base62)
     else:
-        assert_never(num)
+        raise AssertionError('unreachable')

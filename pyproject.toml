@@ -1,47 +1,88 @@
-[project]
-name = "date62"
-description = "Compact string-based date(time) format for logging, data engineering, and visualizations."
-readme = "README.md"
-license = {text = "MIT"}
-keywords = [
-  "date", "datetime", "format",
-  # todo: add more keywords
-]
-classifiers = [
-  # todo: add classifiers: https://pypi.org/classifiers
-]
-requires-python = ">=3.8"
-# todo: requires-python = ">=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4"
-dynamic = ["version"]
-
-[project.optional-dependencies]
-cli = [
-  "click>=8",
-  "python-dateutil>=2.9",
-  "rich_click~=1.8; python_version>='3.9'"
-]
-
-[project.scripts]
-date62 = "date62.cli:cli"
-
-[project.urls]
-#Homepage = "https://date62.info"
-#Documentation = "https://docs.date62.info"
-Repository = "https://github.com/date62/date62-python"
-Issues = "https://github.com/date62/date62-python/issues"
-Changelog = "https://github.com/date62/date62-python/blob/master/CHANGELOG.md"
-
-[dependency-groups]
-dev = [
-  "pytest~=8.3; python_version>='3.12'",
-  "pytest-cov~=6.0; python_version>='3.12'",
-  "pytest-sugar~=1.0; python_version>='3.12'",
-  "python-dateutil>=2.9",
-]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[project]
+name = "date62"
+description = "Compact string-based date(time) format for logging, data engineering, and visualizations."
+authors = [
+  {name = "Michael Makukha", email = "m.makukha@gmail.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+urls.Documentation = "https://date62.readthedocs.io"
+urls.Homepage = "https://github.com/makukha/date62"
+urls.Repository = "https://github.com/makukha/date62"
+urls.Issues = "https://github.com/makukha/date62/issues"
+urls.Changelog = "https://github.com/makukha/date62/blob/main/CHANGELOG.md"
+keywords = []
+classifiers = [
+  # see https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 2",
+  "Programming Language :: Python :: 2.7",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.5",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Documentation",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+dynamic = ["version"]
+scripts = { date62 = "date62.__main__:cli" }
+
+requires-python = ">=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4"
+dependencies = []
+
+[project.optional-dependencies]
+cli = [
+  "click>=8 ; python_version >= '3.6'",
+  "python-dateutil>=2.9",
+  "rich_click>=1.8 ; python_version >= '3.9'",
+  "types-python-dateutil>=2.9 ; python_version >= '3.8'",
+]
+
+[dependency-groups]
+dev = [
+  "bump-my-version>=1.0 ; python_version >= '3.13'",
+  "caseutil>=0.7.2 ; python_version >= '3.13'",
+  "docsub>=0.9.0 ; python_version >= '3.13'",
+  "genbadge[tests,coverage]>=1.1 ; python_version >= '3.13'",
+  "mypy>=1.0 ; python_version >= '3.13'",
+  "ruff>=0.9 ; python_version >= '3.13'",
+  "scriv>=1.5 ; python_version >= '3.13'",
+  "typing_extensions>=4 ; python_version >= '3.13'",
+]
+sphinx = [
+  # see readthedocs.yaml
+  "furo ; python_version >= '3.12'",
+  "myst-parser ; python_version >= '3.12'",
+  "sphinx ; python_version >= '3.12'",
+  "sphinx-copybutton ; python_version >= '3.12'",
+  "sphinx-design ; python_version >= '3.12'",
+  "sphinx-sitemap ; python_version >= '3.12'",
+]
+testing = [
+  "doctestcase>=0.2.2",
+  "mypy>=1 ; python_version >= '3.8'",  # see tox.ini
+  "pytest>=8 ; python_version >= '3.8'",  # see tox.ini
+  "pytest-cov>=6 ; python_version >= '3.13'",
+  "pytest-sugar>=1 ; python_version >= '3.13'",
+]
 
 # bump-my-version
 
@@ -49,31 +90,65 @@ build-backend = "hatchling.build"
 current_version = "0.1.0"
 allow_dirty = true
 files = [
+  {filename = ".copier-answers.yml"},
+  {filename = "docs/badges.md"},
+  {filename = "docs/sphinx/conf.py"},
   {filename = "src/date62/__version__.py"},
 ]
 
 # hatch
 
-[tool.hatch]
-version = { path = "src/date62/__version__.py" }
-
-# towncrier
-
-[tool.towncrier]
-directory = "news.d"
-filename = "CHANGELOG.md"
-package = "date62"
-underlines = ["", "", ""]
-type = [
-  {name = "Security", directory = "security", showcontent = true},
-  {name = "Removed", directory = "removed", showcontent = true},
-  {name = "Deprecated", directory = "deprecated", showcontent = true},
-  {name = "Added", directory = "added", showcontent = true},
-  {name = "Changed", directory = "changed", showcontent = true},
-  {name = "Fixed", directory = "fixed", showcontent = true},
+[tool.hatch.build]
+exclude = [
+  ".just",
+  "Justfile",
+  "Makefile",
+  "compose.yml",
 ]
+[tool.hatch.version]
+path = "src/date62/__version__.py"
 
-# uv
+# mypy
 
-[tool.uv]
-package = true
+[tool.mypy]
+incremental = false
+python_version = "3.9"
+strict = true
+exclude = [
+  "docsubfile.py",  # todo: include docsubfile.py when typing bugs are fixed
+]
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_incomplete_defs = true
+allow_untyped_defs = true
+[[tool.mypy.overrides]]
+module = "tests.usage.*"
+allow_incomplete_defs = false
+allow_untyped_defs = false
+
+# ruff
+
+[tool.ruff]
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B", "S"]
+per-file-ignores."tests/**/*.py" = [
+  "S101",  # Use of `assert` detected
+  "S102",  # Use of `exec` detected
+  "S108",  # Probable insecure usage of temporary file or directory
+  "S603",  # `subprocess` call: check for execution of untrusted input
+]
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+# scriv
+
+[tool.scriv]
+categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Experimental 🧪", "Changed", "Fixed", "Docs", "Misc"]
+entry_title_template = "[{{ version }}](https://github.com/makukha/date62/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
+format = "md"
+fragment_directory = "NEWS.d"
+md_header_level = "2"
+new_fragment_template = "file: NEWS.d/.new_fragment.md.j2"
+version = "literal: pyproject.toml: tool.bumpversion.current_version"
