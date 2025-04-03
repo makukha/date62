@@ -6,19 +6,41 @@
 <!-- docsub: strip -->
 ```shell
 $ python -m date62 --help
-Usage: python -m date62 [OPTIONS] COMMAND [ARGS]...
+usage: date62 [-h] [--version] {encode,now,today} ...
 
-╭─ Options ──────────────────────────────────────────────────────────╮
-│ --version      Show the version and exit.                          │
-│ --help         Show this message and exit.                         │
-╰────────────────────────────────────────────────────────────────────╯
-╭─ Commands ─────────────────────────────────────────────────────────╮
-│ now     Current local datetime in Date62 format.                   │
-│ parse   Parse any dateutil-readable string to Date62 format.       │
-│ today   Current local date in Date62 format.                       │
-╰────────────────────────────────────────────────────────────────────╯
+options:
+-h, --help          show this help message and exit
+--version           show program's version number and exit
+
+subcommands:
+{encode,now,today}
+encode            Encode ISO 8601 datetime string to Date62 format.
+now               Current local datetime in Date62 format.
+today             Current local date in Date62 format.
 ```
 <!-- docsub: end -->
+
+
+## `date62 encode`
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m date62 encode -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ date62 parse --help
+usage: date62 encode [-h] [-n] [-p INT] text
+
+positional arguments:
+text            text containing date or datetime
+
+options:
+-h, --help      show this help message and exit
+-n, --noshort   do not use shortcut form of Date62
+-p, --prec INT  sub-second precision: 1=milli, 2=micro, 3=nano, etc.
+```
+<!-- docsub: end -->
+
 
 ## `date62 now`
 
@@ -28,17 +50,12 @@ Usage: python -m date62 [OPTIONS] COMMAND [ARGS]...
 <!-- docsub: strip -->
 ```shell
 $ date62 now --help
-Usage: python -m date62 now [OPTIONS]
+usage: date62 now [-h] [-n] [-p INT]
 
-Current local datetime in Date62 format.
-
-╭─ Options ──────────────────────────────────────────────────────────╮
-│ --precision    -p  INT  Sub-second precision, power of 1000:       │
-│                         1=millisec, 2=microsec, 3=nanosec, etc.    │
-│                         [default: 0]                               │
-│ --no-shortcut  -n       Do not use shortcut form.                  │
-│ --help                  Show this message and exit.                │
-╰────────────────────────────────────────────────────────────────────╯
+options:
+-h, --help      show this help message and exit
+-n, --noshort   do not use shortcut form of Date62
+-p, --prec INT  sub-second precision: 1=milli, 2=micro, 3=nano, etc.
 ```
 <!-- docsub: end -->
 
@@ -50,36 +67,10 @@ Current local datetime in Date62 format.
 <!-- docsub: strip -->
 ```shell
 $ date62 today --help
-Usage: python -m date62 today [OPTIONS]
+usage: date62 today [-h] [-n]
 
-Current local date in Date62 format.
-
-╭─ Options ──────────────────────────────────────────────────────────╮
-│ --no-shortcut  -n    Do not use shortcut form.                     │
-│ --help               Show this message and exit.                   │
-╰────────────────────────────────────────────────────────────────────╯
-```
-<!-- docsub: end -->
-
-
-## `date62 parse`
-
-<!-- docsub: begin -->
-<!-- docsub: help python -m date62 parse -->
-<!-- docsub: lines after 2 upto -1 -->
-<!-- docsub: strip -->
-```shell
-$ date62 parse --help
-Usage: python -m date62 parse [OPTIONS] TEXT
-
-Parse any dateutil-readable string to Date62 format.
-
-╭─ Options ──────────────────────────────────────────────────────────╮
-│ --precision    -p  INT  Sub-second precision, power of 1000:       │
-│                         1=millisec, 2=microsec, 3=nanosec, etc.    │
-│                         [default: 0]                               │
-│ --no-shortcut  -n       Do not use shortcut form.                  │
-│ --help                  Show this message and exit.                │
-╰────────────────────────────────────────────────────────────────────╯
+options:
+-h, --help     show this help message and exit
+-n, --noshort  do not use shortcut form of Date62
 ```
 <!-- docsub: end -->

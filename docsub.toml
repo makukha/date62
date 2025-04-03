@@ -1,2 +1,2 @@
 [tool.docsub.cmd.help]
-env_vars = { COLUMNS = "70" }
+env_vars = { COLUMNS = "80" }

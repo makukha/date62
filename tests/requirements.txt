@@ -25,7 +25,7 @@ pytest==8.3.5 ; python_full_version >= '3.8'
     #   pytest-sugar
 pytest-cov==6.1.0 ; python_full_version >= '3.13'
 pytest-sugar==1.0.0 ; python_full_version >= '3.13'
-termcolor==3.0.0 ; python_full_version >= '3.13'
+termcolor==3.0.1 ; python_full_version >= '3.13'
     # via pytest-sugar
 tomli==2.2.1 ; python_full_version >= '3.8' and python_full_version < '3.11'
     # via
