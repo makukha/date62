@@ -35,7 +35,7 @@ dist/sphinx: docs/*.md docs/sphinx/*.* src/**/*.*
 # sources
 
 .PHONY: sources
-repo: badges requirements README.md
+sources: badges requirements README.md
 
 .PHONY: badges
 badges: docs/img/badge/coverage.svg docs/img/badge/tests.svg
