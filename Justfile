@@ -51,7 +51,6 @@ sync:
 upgrade:
     uv sync --all-extras --all-groups --upgrade
     uvx copier update --trust --vcs-ref main
-    make build docs
 
 # run linters
 [group('1-develop')]
