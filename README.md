@@ -221,7 +221,7 @@ Pull requests, feature requests, and bug reports are welcome!
 
 # See also
 
-* [Documentation](https://date62.rtfd.io)
+* [Documentation](https://date62.readthedocs.io)
 * [Issues](https://github.com/makukha/date62/issues)
 * [Changelog](https://github.com/makukha/date62/blob/main/CHANGELOG.md)
 * [Security Policy](https://github.com/makukha/date62/blob/main/.github/SECURITY.md)

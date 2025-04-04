@@ -10,7 +10,7 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
-urls.Documentation = "https://date62.rtfd.io"
+urls.Documentation = "https://date62.readthedocs.io"
 urls.Homepage = "https://github.com/makukha/date62"
 urls.Repository = "https://github.com/makukha/date62"
 urls.Issues = "https://github.com/makukha/date62/issues"

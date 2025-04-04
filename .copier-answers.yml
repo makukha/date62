@@ -1,11 +1,11 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: aba8e10
+_commit: ee12420
 _src_path: gh:makukha/copython
 author_email: m.makukha@gmail.com
 author_name: Michael Makukha
 copyright_year: 2024
 docs: readthedocs
-docs_url: https://date62.rtfd.io
+docs_url: https://date62.readthedocs.io
 github_slug: makukha/date62
 github_url: https://github.com/makukha/date62
 module_name: date62

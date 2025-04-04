@@ -56,7 +56,7 @@ intersphinx_mapping = {
 myst_heading_anchors = 4
 
 # html
-html_baseurl = 'https://date62.rtfd.io/en/latest/'
+html_baseurl = 'https://date62.readthedocs.io/en/latest/'
 html_theme = 'furo'
 html_title = f'{project} {release}'
 language = 'en'
