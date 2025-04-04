@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 5c551a9
+_src_path: gh:makukha/copython
+author_email: m.makukha@gmail.com
+author_name: Michael Makukha
+copyright_year: 2024
+docs: readthedocs
+docs_url: https://date62.readthedocs.io
+github_slug: makukha/date62
+github_url: https://github.com/makukha/date62
+module_name: date62
+openssf_bp_id: '10374'
+project_name: date62
+project_version: 0.1.0
+pypi_package_name: date62
+pypi_url: https://pypi.org/project/date62
+python_version: 3.13.2
+python_version_minor: '3.13'
+readthedocs_tool: sphinx

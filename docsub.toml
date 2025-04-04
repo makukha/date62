@@ -1,0 +1,2 @@
+[tool.docsub.cmd.help]
+env_vars = { COLUMNS = "80" }

@@ -1,0 +1,13 @@
+- Compact: 4 ASCII characters for date, 7 characters for datetime
+- URL safe: uses Base62 encoding
+- Natural sorting
+- Semi-human-readable
+- Covers range from 567-Jan-01 to 3843-Dec-31
+- Arbitrary sub-second precision
+- More readable shortcut form for values between 1970-Jan-01 and 2069-Dec-31
+- Timezone info not supported at the moment
+- Use cases:
+  - Logging timestamps
+  - Visualize dates on charts
+  - Datetime-based file identifiers
+  - Sub-second-precision string labels
