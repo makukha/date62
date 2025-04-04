@@ -31,5 +31,5 @@ tomli==2.2.1 ; python_full_version >= '3.8' and python_full_version < '3.11'
     # via
     #   mypy
     #   pytest
-typing-extensions==4.13.0 ; python_full_version >= '3.8'
+typing-extensions==4.13.1 ; python_full_version >= '3.8'
     # via mypy
