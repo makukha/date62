@@ -1,4 +1,5 @@
 mod gh '.just/gh.just'
+mod git '.just/git.just'
 
 docker := if `command -v docker || true` == "" { "podman" } else { "docker" }
 
