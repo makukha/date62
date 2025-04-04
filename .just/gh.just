@@ -1,7 +1,7 @@
 mod git
 
 issue-id := 'git branch --show-current | cut -d- -f1'
-issue-title := 'GH_PAGER=cat gh issue view ' + issue-id + " --json title -t '{{{{.title}}'"
+issue-title := 'GH_PAGER=cat gh issue view $(' + issue-id + ") --json title -t '{{{{.title}}'"
 repo-name := "git config --get remote.origin.url | sed 's|.*/\\(.*/.*\\)\\.git$|\\1|"
 
 
