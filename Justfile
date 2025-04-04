@@ -107,7 +107,7 @@ version-bump:
 [private]
 changelog-collect:
     uv run scriv collect
-    sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1***/' -i '' CHANGELOG.md
+    sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1***/' -i'' CHANGELOG.md
 
 # publish package on PyPI
 [private]
