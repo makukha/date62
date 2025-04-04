@@ -1,8 +1,8 @@
 mod git
 
 issue-id := "git branch --show-current | cut -d- -f1"
-issue-title := "GH_PAGER=cat gh issue view " issue-id " --json title -t '{{{{.title}}'"
-repo-name := "git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'"
+issue-title := "GH_PAGER=cat gh issue view {{issue-id}} --json title -t '{{{{.title}}'"
+repo-name := "git config --get remote.origin.url | sed 's|.*/\\(.*/.*\\)\\.git$|\\1|'"
 
 
 default:
@@ -21,7 +21,7 @@ pr-create:
     gh pr create --web -t "$({{issue-title}})"
 
 # create GitHub release
-release-create:
+release-create tag:
     #!/usr/bin/env sh
     set -eu
     if [ "$(git branch --show-current)" != "main" ]; then
