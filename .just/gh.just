@@ -1,12 +1,22 @@
+mod git
+
+default:
+
+# get issue id of current GitHub branch
+issue-id:
+    @git branch --show-current | cut -d- -f1
+
+# get issue title of current GitHub branch
+issue-title:
+    @GH_PAGER=cat gh issue view "$(just issue-id)" --json title -t '{{{{.title}}'
+
 # create GitHub pull request
-[group('github')]
-gh-create-pr:
-    just gh-push
-    gh pr create --web -t "$(just gh-issue-title)"
+pr-create:
+    just git::push
+    gh pr create --web -t "$(just issue-title)"
 
 # create GitHub release
-[group('github')]
-gh-create-release:
+release-create:
     #!/usr/bin/env bash
     set -euo pipefail
     if [ "$(git branch --show-current)" != "main" ]; then
@@ -18,33 +28,12 @@ gh-create-release:
     git push origin tag "$tag"
     gh release create --draft -t "$tag — $(date -Idate)" --generate-notes "$tag"
 
-# get issue id of current GitHub branch
-[group('github')]
-gh-issue-id:
-    @git branch --show-current | cut -d- -f1
-
-# get issue title of current GitHub branch
-[group('github')]
-gh-issue-title:
-    @GH_PAGER=cat gh issue view "$(just gh-issue-id)" --json title -t '{{{{.title}}'
-
-# push all GitHub commits after ensuring the clean state
-[group('github')]
-gh-push:
-    # ensure clean state
-    git diff --exit-code
-    git diff --cached --exit-code
-    git ls-files --other --exclude-standard --directory
-    git push
-
 # get "org/name" of current GitHub repository
-[group('github')]
-gh-repo-name:
+repo-name:
     @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'
 
 # update GitHub repository metadata from pyproject.toml
-[group('github')]
-gh-repo-upd:
+repo-update:
     #!/usr/bin/env bash
     set -euo pipefail
     # update description
@@ -55,7 +44,7 @@ gh-repo-upd:
       gh repo edit -h "$homepage"
     fi
     # delete old topics
-    old_topics="$(GH_PAGER=cat gh api repos/$(just gh-repo-name) | yq -r '.topics | join(" ")')"
+    old_topics="$(GH_PAGER=cat gh api repos/$(just repo-name) | yq -r '.topics | join(" ")')"
     if [ -n "$old_topics" ]; then
       gh repo edit $(sed 's/ / --remove-topic /g' <<<" $old_topics")
     fi

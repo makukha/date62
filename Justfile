@@ -1,132 +1,160 @@
-import? '.just/changelog.just'
-import? '.just/gh.just'
-import? '.just/version.just'
+mod gh '.just/gh.just'
 
-set shell := ['zsh', '-c']
 docker := if `command -v docker || true` == "" { "podman" } else { "docker" }
 
-# list available commands
+# list commands
 default:
     @just --list
 
 #
-# Develop
+# --- Seed ---
 #
 
 # run once on project creation
-[group('develop')]
+[group('0-seed')]
 seed:
     echo -e "#!/usr/bin/env sh\njust pre-commit" > .git/hooks/pre-commit
 
-# initialize dev environment
-[group('develop'), linux, macos]
-pre:
+#
+# --- Develop ---
+#
+
+# init dev environment
+[group('1-develop')]
+init:
+    chmod ug+x .git/hooks/*
     brew install gh git uv yq
 
-# synchronize dev environment
-[group('develop')]
+# build python package
+[group('1-develop')]
+build: sync
+    make requirements build
+
+# build docs
+[group('1-develop')]
+docs: sync
+    make docs
+
+# add changelog news entry
+[group('1-develop')]
+news:
+    uv run scriv create
+
+# sunchronize dependencies
+[group('1-develop')]
 sync:
-    chmod ug+x .git/hooks/*
+    uv lock
     uv sync --all-extras --all-groups --frozen
-    make requirements
 
 # update dev environment
-[group('develop')]
+[group('1-develop')]
 upgrade:
     uv sync --all-extras --all-groups --upgrade
-    make requirements
     uvx copier update --trust --vcs-ref main
+    make build docs
 
 # run linters
-[group('develop')]
+[group('1-develop')]
 lint:
     uv run mypy .
     uv run ruff check
     uv run ruff format --diff
 
-[private]
-tox-provision:
-    time {{ docker }} compose run --rm tox run --notest --skip-pkg-install
-
 # run tests
-[group('develop')]
+[group('1-develop')]
 test *toxargs: build
-    make tests/requirements.txt
+    #!/usr/bin/env sh
+    set -eu
+    PKG="$(find dist/pkg -name '*.whl')"
     mkdir -p .tox
     find .tox -name '.pass-*' -delete
-    {{ if toxargs == "" { "just tox-provision" } else { "" } }}
-    time {{ docker }} compose run --rm tox \
-        {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
-         --installpkg="$(find dist -name '*.whl')" {{toxargs}}
-    make badges
-    just docs
+    if [ "{{toxargs}}" = "" ]; then
+        {{docker}} compose run --rm tox run --notest --skip-pkg-install
+        {{docker}} compose run --rm tox run-parallel --installpkg="$PKG"
+    else
+        {{docker}} compose run --rm tox run --installpkg="$PKG" {{toxargs}}
+    fi
+    make sources
 
 # enter testing docker container
-[group('develop')]
-shell:
-    {{ docker }} compose run --rm -it --entrypoint bash tox
+[group('1-develop')]
+shell service='tox':
+    {{docker}} compose run --rm --entrypoint bash {{service}}
 
-# build python package
-[group('develop')]
-build: sync
-    make build
-
-# build docs
-[group('develop')]
-docs:
-    make docs
+# remove all temporary files
+[group('1-develop')]
+clean:
+    rm -rf .tmp .tox .venv dist .coverage
+    find . -name __pycache__ -delete
 
 #
-# Publish
+# --- Release helpers ---
 #
+
+# display manual action confirmation
+[private]
+manual msg:
+    @printf "\n{{msg}}, then press enter " && read
+
+# bump project version
+[private]
+version-bump:
+    #!/usr/bin/env bash
+    set -eu
+    uv run bump-my-version show-bump
+    printf 'Choose version part: '
+    read PART
+    uv run bump-my-version bump -- "$PART"
+    uv lock
+
+# collect changelog entries
+[private]
+changelog-collect:
+    uv run scriv collect
+    sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1***/' -i '' CHANGELOG.md
 
 # publish package on PyPI
-[group('publish')]
+[private]
 pypi-publish: build
     uv publish
 
 #
-# Manage
+# --- Manage ---
 #
 
-# display confirmation prompt
-[private]
-confirm msg:
-    @printf "\n{{msg}}, then press enter " && read
-
 # run pre-commit hook
-[group('manage')]
+[group('2-manage')]
 pre-commit:
     just lint
-    just docs
+    make docs sources
 
 # run pre-merge
-[group('manage')]
+[group('2-manage')]
 pre-merge:
     just lint
-    just docs
     just test
+    make docs sources
 
 # merge
-[group('manage')]
+[group('2-manage')]
 merge:
     just pre-merge
-    just gh-create-pr
-    just confirm "Merge pull request"
+    just gh::pr-create
+    just manual "Merge pull request"
     git switch main
     git fetch
     git pull
 
 # release
-[group('manage')]
+[group('2-manage')]
 release:
     just pre-merge
-    just bump
-    just changelog
-    just docs
+    just version-bump
+    just changelog-collect
+    make sources
     just confirm "Proofread the changelog and commit changes"
     just merge
-    just gh-repo-upd
-    just gh-create-release
+    just gh::repo-update
+    just gh::release-create
     just confirm "Update release notes and publish GitHub release"
     just pypi-publish
