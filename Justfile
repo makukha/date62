@@ -92,11 +92,6 @@ clean:
 # --- Release helpers ---
 #
 
-# display manual action confirmation
-[private]
-manual msg:
-    @printf "\n{{msg}}, then press enter " && read
-
 # bump project version
 [private]
 version-bump:
@@ -112,7 +107,7 @@ version-bump:
 [private]
 changelog-collect:
     uv run scriv collect
-    sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1***/' -i '' CHANGELOG.md
+    sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1***/' -i'' CHANGELOG.md
 
 # publish package on PyPI
 [private]
@@ -140,8 +135,9 @@ pre-merge:
 [group('2-manage')]
 merge:
     just pre-merge
+    @echo "Manually>>> Merge pull request ..."
     just gh::pr-create
-    just manual "Merge pull request"
+    @printf "Done? " && read _
     git switch main
     git fetch
     git pull
@@ -153,9 +149,11 @@ release:
     just version-bump
     just changelog-collect
     make sources
-    just confirm "Proofread the changelog and commit changes"
+    @echo "Manually>>> Proofread the changelog and commit changes ..."
+    @printf "Done? " && read _
     just merge
     just gh::repo-update
+    @echo "Manually>>> Update GitHub release notes and publish release ..."
     just gh::release-create $(uv run bump-my-version show current_tag)
-    just confirm "Update release notes and publish GitHub release"
+    @printf "Done? " && read _
     just pypi-publish

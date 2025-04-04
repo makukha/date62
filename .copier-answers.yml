@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 5c551a9
+_commit: bc2f6ad
 _src_path: gh:makukha/copython
 author_email: m.makukha@gmail.com
 author_name: Michael Makukha
@@ -11,7 +11,7 @@ github_url: https://github.com/makukha/date62
 module_name: date62
 openssf_bp_id: '10374'
 project_name: date62
-project_version: 0.1.0
+project_version: 0.2.0
 pypi_package_name: date62
 pypi_url: https://pypi.org/project/date62
 python_version: 3.13.2
