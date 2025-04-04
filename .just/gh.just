@@ -1,24 +1,23 @@
 mod git
 
-issue-id := 'git branch --show-current | cut -d- -f1'
-issue-title := 'GH_PAGER=cat gh issue view $(' + issue-id + ") --json title -t '{{{{.title}}'"
-repo-name := "git config --get remote.origin.url | sed 's|.*/\\(.*/.*\\)\\.git$|\\1|"
-
 
 default:
 
 # get issue id of current GitHub branch
 issue-id:
-    @{{issue-id}}
+    @git branch --show-current | cut -d- -f1
 
 # get issue title of current GitHub branch
 issue-title:
-    @{{issue-title}}
+    @GH_PAGER=cat gh issue view "$(just gh::issue-id)" --json title -t '{{{{.title}}'
 
 # create GitHub pull request
 pr-create:
+    #!/usr/bin/env sh
+    set -eu
     just git::push
-    gh pr create --web -t "$({{issue-title}})"
+    TITLE=
+    gh pr create --web -t "$(just gh::issue-title)"
 
 # create GitHub release
 release-create tag:
@@ -33,7 +32,7 @@ release-create tag:
 
 # get "org/name" of current GitHub repository
 repo-name:
-    @{{repo-name}}
+    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|
 
 # update GitHub repository metadata from pyproject.toml
 repo-update:
@@ -47,7 +46,7 @@ repo-update:
       gh repo edit -h "$homepage"
     fi
     # delete old topics
-    old_topics="$(GH_PAGER=cat gh api repos/$("{{repo-name}}") | yq -r '.topics | join(" ")')"
+    old_topics="$(GH_PAGER=cat gh api repos/$(just gh::repo-name) | yq -r '.topics | join(" ")')"
     if [ -n "$old_topics" ]; then
       gh repo edit $(sed 's/ / --remove-topic /g' <<<" $old_topics")
     fi
