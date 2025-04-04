@@ -3,6 +3,7 @@ mod git '.just/git.just'
 
 docker := if `command -v docker || true` == "" { "podman" } else { "docker" }
 
+
 # list commands
 default:
     @just --list
