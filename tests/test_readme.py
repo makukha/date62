@@ -39,7 +39,7 @@ class TestReadme(TestCase):
             value, d62, d62s, prec = case
             assert value is not None  # for typing only
             self.assertEqual(d62, date62.encode(value, prec))
-            self.assertEqual(d62s, date62.encode(value, prec, shortcut=True))
+            self.assertEqual(d62s, date62.encode(value, prec, scut=True))
 
     # fmt: off
     def test_precise(
@@ -53,5 +53,5 @@ class TestReadme(TestCase):
             value, d62, d62s, prec = case
             assert value is not None  # for typing only
             self.assertEqual(d62, date62.encode_timestamp(value, prec))
-            self.assertEqual(d62s, date62.encode_timestamp(value, prec, shortcut=True))
+            self.assertEqual(d62s, date62.encode_timestamp(value, prec, scut=True))
     # fmt: off

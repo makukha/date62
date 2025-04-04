@@ -22,15 +22,15 @@ def decode(value):  # type: (str) -> Union[date, datetime, time, Decimal]
         raise ValueError('Invalid date62 string')
 
 
-def encode(value, prec=0, shortcut=False):  # type: (Union[date, time, datetime, int, float, Decimal], int, bool) -> str
+def encode(value, prec=0, scut=False):  # type: (Union[date, time, datetime, int, float, Decimal], int, bool) -> str
     if isinstance(value, datetime):
-        return encode_datetime(value, prec=prec, shortcut=shortcut)
+        return encode_datetime(value, prec=prec, scut=scut)
     elif isinstance(value, date):
-        return encode_date(value, shortcut=shortcut)
+        return encode_date(value, scut=scut)
     elif isinstance(value, time):
         return encode_time(value, prec=prec)
     elif isinstance(value, (int, float, Decimal)):
-        return encode_timestamp(value, prec=prec)
+        return encode_timestamp(value, prec=prec, scut=scut)
     else:
         raise TypeError('Unexpected type {}'.format(type(value)))
 
@@ -57,13 +57,13 @@ def decode_date(text):  # type: (str) -> date
     return ret
 
 
-def encode_date(value, shortcut=False):  # type: (date, bool) -> str
+def encode_date(value, scut=False):  # type: (date, bool) -> str
     """
     Encode date as Date62 string.
     """
-    if shortcut and 1970 <= value.year <= 1999:
+    if scut and 1970 <= value.year <= 1999:
         y = str(value.year - 1900)
-    elif shortcut and 2000 <= value.year <= 2069:
+    elif scut and 2000 <= value.year <= 2069:
         y = str(value.year - 2000)
     else:
         y = encode_int(value.year).zfill(2)
@@ -82,7 +82,7 @@ def decode_datetime(text):  # type: (str) -> datetime
     raise NotImplementedError
 
 
-def encode_datetime(value, prec=0, shortcut=False):  # type: (datetime, int, bool) -> str
+def encode_datetime(value, prec=0, scut=False):  # type: (datetime, int, bool) -> str
     """
     Encode datetime as Date62 string.
     """
@@ -90,7 +90,7 @@ def encode_datetime(value, prec=0, shortcut=False):  # type: (datetime, int, boo
         raise ValueError('Precision must be greater than or equal to 0')
 
     ret = '{date}{time}'.format(
-        date=encode_date(value.date(), shortcut=shortcut),
+        date=encode_date(value.date(), scut=scut),
         time=encode_time(value.time(), prec=prec),
     )
     return ret
@@ -137,7 +137,7 @@ def decode_timestamp(text):  # type: (str) -> Decimal
     raise NotImplementedError
 
 
-def encode_timestamp(value, prec=0, shortcut=False):  # type: (Union[int, float, Decimal], int, bool) -> str
+def encode_timestamp(value, prec=0, scut=False):  # type: (Union[int, float, Decimal], int, bool) -> str
     """
     Encode POSIX timestamp as Date62 datetime string.
     """
@@ -146,7 +146,7 @@ def encode_timestamp(value, prec=0, shortcut=False):  # type: (Union[int, float,
 
     value = Decimal(value)
     seconds, frac = divmod(value, 1)
-    dtm = encode_datetime(datetime.fromtimestamp(int(seconds)), shortcut=shortcut)
+    dtm = encode_datetime(datetime.fromtimestamp(int(seconds)), scut=scut)
 
     ret = '{}{}'.format(dtm, encode_fraction(frac, prec=prec)) if prec else dtm
     return ret
@@ -169,9 +169,13 @@ def encode_fraction(value, prec=None):  # type: (Decimal, Optional[int]) -> str
     # chop value in 3-digit chunks
     chunks = [0] if value == 0 else []
     res = value
-    while res > 0:
+    while res > 0 and (prec is None or len(chunks) < prec):
         head, res = divmod(res * 1000, 1)
         chunks.append(int(head))
+
+    # append zeros if needed
+    if prec is not None:
+        chunks.extend(0 for _ in range(prec - len(chunks)))
 
     # convert int to base62 and merge
     ret = ''.join(encode_int(chunk).zfill(2) for chunk in chunks)

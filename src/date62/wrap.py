@@ -1,5 +1,4 @@
 from datetime import datetime, tzinfo  # noqa: F401 # needed for typing
-import sys
 
 try:
     from datetime import timezone
@@ -14,18 +13,13 @@ except ImportError:
 from .codec import encode_date, encode_datetime
 
 
-def now(prec=2, shortcut=True, tz=None):  # type: (int, bool, Optional[tzinfo]) -> str
-    return encode_datetime(datetime.now(tz=tz), prec=prec, shortcut=shortcut)
+_datetime_now = datetime.now
+_datetime_today = datetime.today
 
 
-def today(shortcut=True):  # type: (bool) -> str
-    return encode_date(datetime.today(), shortcut=shortcut)
+def now(prec=2, scut=True, tz=None):  # type: (int, bool, Optional[tzinfo]) -> str
+    return encode_datetime(_datetime_now(tz=tz), prec=prec, scut=scut)
 
 
-def utcnow(prec=2, shortcut=True):  # type: (int, bool) -> str
-    if sys.version_info < (3, 2):  # pragma: nocover  # coverage runs on Python 3
-        t = datetime.utcnow()
-    else:
-        t = datetime.now(tz=timezone.utc)
-    ret = encode_datetime(t, prec=prec, shortcut=shortcut)
-    return ret
+def today(scut=True):  # type: (bool) -> str
+    return encode_date(_datetime_today(), scut=scut)

@@ -51,15 +51,15 @@ $ pip install date62
 
 <!-- docsub: begin -->
 <!-- docsub: include docs/examples.md -->
-| date or datetime                  | Date62                     | plain                        |
-|-----------------------------------|----------------------------|------------------------------|
-| 2024-Dec-29                       | `24CT`, `WeCT`             | `20241229`                   |
-| 2025-Jan-01                       | `2511`, `Wf11`             | `20250101`                   |
-| 2025-Jan-01 00:01:02              | `2511012`, `Wf11012`       | `20250101000102`             |
-| 2025-Jan-01 00:01:02.345          | `25110125Z`, `Wf...`       | `20250101000102345`          |
-| 2025-Jan-01 00:01:02.345678       | `25110125ZAw`, `Wf...`     | `20250101000102345678`       |
-| 2025-Jan-01 00:01:02.345678012    | `25110125ZAw0C`, `Wf...`   | `20250101000102345678012`    |
-| 2025-Jan-01 00:01:02.345678012345 | `25110125ZAw0C5Z`, `Wf...` | `20250101000102345678012345` |
+| date or datetime                  | Date62                     |
+|-----------------------------------|----------------------------|
+| 2024-Dec-29                       | `24CT`, `WeCT`             |
+| 2025-Jan-01                       | `2511`, `Wf11`             |
+| 2025-Jan-01 00:01:02              | `2511012`, `Wf11012`       |
+| 2025-Jan-01 00:01:02.345          | `25110125Z`, `Wf...`       |
+| 2025-Jan-01 00:01:02.345678       | `25110125ZAw`, `Wf...`     |
+| 2025-Jan-01 00:01:02.345678012    | `25110125ZAw0C`, `Wf...`   |
+| 2025-Jan-01 00:01:02.345678012345 | `25110125ZAw0C5Z`, `Wf...` |
 <!-- docsub: end -->
 
 
@@ -69,19 +69,42 @@ $ pip install date62
 <!-- docsub: include docs/usage.md -->
 <!-- docsub: begin -->
 <!-- docsub: x toc tests/test_usage.py 'Usage.*' -->
-* [First use case](#first-use-case)
+* [Encode](#encode)
 <!-- docsub: end -->
 
-```pycon
->>> from date62 import *  # todo
-```
 
 <!-- docsub: begin -->
 <!-- docsub: x cases tests/test_usage.py 'Usage.*' -->
-## First use case
+## Encode
+
+Works for `datetime`, `date`, `time`, `int`, `float`, `Decimal`.
 
 ```pycon
->>> from date62 import __version__
+>>> from datetime import datetime
+>>> from decimal import Decimal
+>>> import date62
+
+>>> d = '2024-12-29 12:34:56.789012'
+>>> dtm = datetime.strptime(d, '%Y-%m-%d %H:%M:%S.%f')
+
+>>> date62.encode(dtm)
+'WeCTCYu'
+
+>>> date62.encode(dtm, scut=True, prec=2)
+'24CTCYuCj0C'
+
+>>> date62.encode(dtm.date(), scut=True)
+'24CT'
+
+>>> date62.encode(dtm.time())
+'CYu'
+
+>>> date62.encode(dtm.time(), prec=3)
+'CYuCj0C00'
+
+>>> t = '1735468496.789012345678'
+>>> date62.encode(Decimal(t), scut=True, prec=4)
+'24CTAYuCj0C5ZAw'
 ```
 
 <!-- docsub: end -->
@@ -98,20 +121,20 @@ $ pip install date62
 <!-- docsub: strip -->
 ```shell
 $ python -m date62 --help
-usage: date62 [-h] [--version] {encode,now,today} ...
+usage: date62 [-h] [--version] {encode,now,time,today} ...
 
 options:
--h, --help          show this help message and exit
---version           show program's version number and exit
+-h, --help            show this help message and exit
+--version             show program's version number and exit
 
 subcommands:
-{encode,now,today}
-encode            Encode ISO 8601 datetime string to Date62 format.
-now               Current local datetime in Date62 format.
-today             Current local date in Date62 format.
+{encode,now,time,today}
+encode              Encode ISO 8601 datetime string to Date62 format.
+now                 Current local datetime in Date62 format.
+time                Current local datetime in Date62 format.
+today               Current local date in Date62 format.
 ```
 <!-- docsub: end -->
-
 
 ## `date62 encode`
 
@@ -128,11 +151,10 @@ text            text containing date or datetime
 
 options:
 -h, --help      show this help message and exit
--n, --noshort   do not use shortcut form of Date62
+-n, --noscut    do not use shortcut form of Date62
 -p, --prec INT  sub-second precision: 1=milli, 2=micro, 3=nano, etc.
 ```
 <!-- docsub: end -->
-
 
 ## `date62 now`
 
@@ -146,7 +168,23 @@ usage: date62 now [-h] [-n] [-p INT]
 
 options:
 -h, --help      show this help message and exit
--n, --noshort   do not use shortcut form of Date62
+-n, --noscut    do not use shortcut form of Date62
+-p, --prec INT  sub-second precision: 1=milli, 2=micro, 3=nano, etc.
+```
+<!-- docsub: end -->
+
+## `date62 time`
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m date62 time -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ date62 now --help
+usage: date62 time [-h] [-p INT]
+
+options:
+-h, --help      show this help message and exit
 -p, --prec INT  sub-second precision: 1=milli, 2=micro, 3=nano, etc.
 ```
 <!-- docsub: end -->
@@ -162,8 +200,8 @@ $ date62 today --help
 usage: date62 today [-h] [-n]
 
 options:
--h, --help     show this help message and exit
--n, --noshort  do not use shortcut form of Date62
+-h, --help    show this help message and exit
+-n, --noscut  do not use shortcut form of Date62
 ```
 <!-- docsub: end -->
 <!-- docsub: end #cli.md -->

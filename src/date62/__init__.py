@@ -11,7 +11,8 @@ from .codec import (
     encode_time,
     encode_timestamp,
 )
-from .wrap import now, today, utcnow
+from .wrap import now, today
+
 
 __all__ = [
     'decode',
@@ -26,5 +27,4 @@ __all__ = [
     'encode_timestamp',
     'now',
     'today',
-    'utcnow',
 ]
