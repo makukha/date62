@@ -77,14 +77,15 @@ testing = [
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.1.0"
 allow_dirty = true
+current_version = "0.1.0"
 files = [
   {filename = ".copier-answers.yml"},
   {filename = "docs/badges.md"},
   {filename = "docs/sphinx/conf.py"},
   {filename = "src/date62/__version__.py"},
 ]
+tag = true
 
 # hatch
 

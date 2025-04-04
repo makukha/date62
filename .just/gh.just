@@ -1,41 +1,44 @@
 mod git
 
+issue-id := "git branch --show-current | cut -d- -f1"
+issue-title := "GH_PAGER=cat gh issue view " issue-id " --json title -t '{{{{.title}}'"
+repo-name := "git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'"
+
+
 default:
 
 # get issue id of current GitHub branch
 issue-id:
-    @git branch --show-current | cut -d- -f1
+    @{{issue-id}}
 
 # get issue title of current GitHub branch
 issue-title:
-    @GH_PAGER=cat gh issue view "$(just issue-id)" --json title -t '{{{{.title}}'
+    @{{issue-title}}
 
 # create GitHub pull request
 pr-create:
     just git::push
-    gh pr create --web -t "$(just issue-title)"
+    gh pr create --web -t "$({{issue-title}})"
 
 # create GitHub release
 release-create:
-    #!/usr/bin/env bash
-    set -euo pipefail
+    #!/usr/bin/env sh
+    set -eu
     if [ "$(git branch --show-current)" != "main" ]; then
         echo "Can release from main branch only"
         exit 1
     fi
-    tag="v$(just version)"
-    git tag --force "$tag" HEAD
-    git push origin tag "$tag"
-    gh release create --draft -t "$tag — $(date -Idate)" --generate-notes "$tag"
+    git push origin tag "{{tag}}"
+    gh release create --draft -t "{{tag}} — $(date -Idate)" --generate-notes "{{tag}}"
 
 # get "org/name" of current GitHub repository
 repo-name:
-    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'
+    @{{repo-name}}
 
 # update GitHub repository metadata from pyproject.toml
 repo-update:
-    #!/usr/bin/env bash
-    set -euo pipefail
+    #!/usr/bin/env sh
+    set -eu
     # update description
     gh repo edit -d "$(yq .project.description pyproject.toml)"
     # update homepage
@@ -44,7 +47,7 @@ repo-update:
       gh repo edit -h "$homepage"
     fi
     # delete old topics
-    old_topics="$(GH_PAGER=cat gh api repos/$(just repo-name) | yq -r '.topics | join(" ")')"
+    old_topics="$(GH_PAGER=cat gh api repos/$("{{repo-name}}") | yq -r '.topics | join(" ")')"
     if [ -n "$old_topics" ]; then
       gh repo edit $(sed 's/ / --remove-topic /g' <<<" $old_topics")
     fi

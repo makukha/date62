@@ -70,17 +70,17 @@ test *toxargs: build
     mkdir -p .tox
     find .tox -name '.pass-*' -delete
     if [ "{{toxargs}}" = "" ]; then
-        {{docker}} compose run --rm tox run --notest --skip-pkg-install
-        {{docker}} compose run --rm tox run-parallel --installpkg="$PKG"
+        "{{docker}}" compose run --rm tox run --notest --skip-pkg-install
+        "{{docker}}" compose run --rm tox run-parallel --installpkg="$PKG"
     else
-        {{docker}} compose run --rm tox run --installpkg="$PKG" {{toxargs}}
+        "{{docker}}" compose run --rm tox run --installpkg="$PKG" "{{toxargs}}"
     fi
     make sources
 
 # enter testing docker container
 [group('1-develop')]
 shell service='tox':
-    {{docker}} compose run --rm --entrypoint bash {{service}}
+    "{{docker}}" compose run --rm --entrypoint bash "{{service}}"
 
 # remove all temporary files
 [group('1-develop')]
@@ -105,7 +105,7 @@ version-bump:
     uv run bump-my-version show-bump
     printf 'Choose version part: '
     read PART
-    uv run bump-my-version bump -- "$PART"
+    uv run bump-my-version bump "$PART"
     uv lock
 
 # collect changelog entries
@@ -156,6 +156,6 @@ release:
     just confirm "Proofread the changelog and commit changes"
     just merge
     just gh::repo-update
-    just gh::release-create
+    just gh::release-create $(uv run bump-my-version show current_tag)
     just confirm "Update release notes and publish GitHub release"
     just pypi-publish
